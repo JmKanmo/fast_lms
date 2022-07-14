@@ -84,25 +84,20 @@ public class AdminCourseController extends BaseController {
     public String addSubmit(Model model, HttpServletRequest request
                             , MultipartFile file
             , CourseInput parameter) {
-    
         String saveFilename = "";
         String urlFilename = "";
-        
-        if (file != null) {
-            String originalFilename = file.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 
-            String[] arrFilename = Utils.getNewSaveFile(Utils.USER_DIRECTORY, Utils.BASE_DIRECTORY, originalFilename);
-    
-            saveFilename = arrFilename[0];
-            urlFilename = arrFilename[1];
-            
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
             try {
-                File newFile = new File(saveFilename);
+                File newFile = new File(Utils.getNewSaveFile(file.getOriginalFilename(), Utils.IMAGE_LOCAL_DIRECTORY, uuid));
                 FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(newFile));
             } catch (IOException e) {
                 log.info("############################ - 1");
                 log.info(e.getMessage());
             }
+        }else{
+            // TODO
         }
         
         parameter.setFilename(saveFilename);

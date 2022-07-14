@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 화면 </title>
+    <style>
+        .banner_btn_div {
+            margin-top: 10px;
+        }
+
+        .banner_btn_div .banner_count {
+            float: right;
+        }
+
+        .banner_table {
+            margin-top: 20px;
+            width: 100%;
+            border: 1px solid black;
+        }
+
+        .banner_table th {
+            border: 1px solid black;
+        }
+
+        .banner_btn_div .banner_reg_button {
+            border-width: 0;
+            background-color: transparent;
+            text-decoration: underline;
+            font-size: 14px;
+            line-height: 20px;
+            height: 20px;
+            color: #000;
+            cursor: pointer;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+</head>
+<body>
+<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+<h1>배너 관리</h1>
+
+<div class="banner_btn_div">
+    <a class="banner_list_link" href="/admin/banner/add.do">배너 등록</a>
+    <button class="banner_reg_button" id="banner_reg_button" type="submit">선택 삭제</button>
+    <span class="banner_count">전체 <span>25</span> 개</span>
+</div>
+
+
+<div class="banner_list">
+    <table class="banner_table">
+        <thead>
+        <tr>
+            <th>
+                <input id="totalCheckBox" type="checkbox"/>
+            </th>
+
+            <th>
+                <span>NO</span>
+            </th>
+
+            <th>
+                <span>배너명</span>
+            </th>
+
+            <th>
+                <span>이미지</span>
+            </th>
+
+            <th>
+                <span>등록일</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody id="dataLIst">
+        <tr th:each="banner : ${bannerList}">
+            <td>
+                <input type="checkbox"/>
+            </td>
+
+            <td>
+                <span th:text="${banner.id}" th:value="${banner.id}">1</span>
+            </td>
+
+            <td>
+                <p>
+                    <a th:href="'/admin/banner/update.do?id=' + ${banner.id}" th:text="${banner.name}">매인배너1</a>
+                </p>
+            </td>
+
+            <td>
+                <img th:src="@{${banner.imgSrc}}">
+            </td>
+
+            <td>
+                <p th:text="${x.regDt}">2021.01.01</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="pager" th:utext="${pager}">
+    </div>
+</div>
+</body>
+</html>

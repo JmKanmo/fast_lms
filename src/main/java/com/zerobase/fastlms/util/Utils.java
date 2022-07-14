@@ -3,13 +3,11 @@ package com.zerobase.fastlms.util;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 public class Utils {
-    public static final String USER_DIRECTORY = "C:\\Users\\apdh1\\OneDrive\\사진\\스크린샷";
-    public static final String BASE_DIRECTORY = "/files";
+    public static final String IMAGE_SAVE_DIRECTORY = "/files";
+    public static final String IMAGE_LOCAL_DIRECTORY = "/library/opt/files/";
 
     public static LocalDate getLocalDate(String value, String pattern) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -39,17 +37,14 @@ public class Utils {
         }
         return ip;
     }
-
-    public static String[] getNewSaveFile(String baseLocalPath, String baseUrlPath, String originalFilename) {
-
+    public static String getNewSaveFile(String originalFilename, String baseUrlPath, String uuid) {
         LocalDate now = LocalDate.now();
+        String urlDir = String.format("%s/%d/%02d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth());
 
         String[] dirs = {
-                String.format("%s/%d/", baseLocalPath, now.getYear()),
-                String.format("%s/%d/%02d/", baseLocalPath, now.getYear(), now.getMonthValue()),
-                String.format("%s/%d/%02d/%02d/", baseLocalPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth())};
-
-        String urlDir = String.format("%s/%d/%02d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+                String.format("%s/%d/", baseUrlPath, now.getYear()),
+                String.format("%s/%d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue()),
+                String.format("%s/%d/%02d/%02d/", baseUrlPath, now.getYear(), now.getMonthValue(), now.getDayOfMonth())};
 
         for (String dir : dirs) {
             File file = new File(dir);
@@ -66,14 +61,12 @@ public class Utils {
             }
         }
 
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        String newFilename = String.format("%s%s", dirs[2], uuid);
         String newUrlFilename = String.format("%s%s", urlDir, uuid);
+
         if (fileExtension.length() > 0) {
-            newFilename += "." + fileExtension;
             newUrlFilename += "." + fileExtension;
         }
 
-        return new String[]{newFilename, newUrlFilename};
+        return newUrlFilename;
     }
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>배너 관리 - 배너 등록</title>
+    <title>관리자 화면</title>
 
     <style>
         .banner-form {
@@ -58,12 +58,20 @@
                 <input type="text" name="name" required placeholder="배너명 입력"/>
             </td>
         </tr>
+
+        <tr>
+            <th>대체텍스트</th>
+            <td>
+                <input type="text" name="alterText" required placeholder="대체 텍스트 입력"/>
+            </td>
+        </tr>
+
         <tr>
             <th>
                 배너 파일
             </th>
             <td>
-                <input type="file" name="file"/>
+                <input type="file" name="multipartFile"/>
             </td>
         </tr>
 

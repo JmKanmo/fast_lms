@@ -13,8 +13,8 @@ public class BannerInput {
     private String name;
     private String linkUrl;
     private int openSelect;
+    private int sortOrder;
     private boolean visibility;
-
-    private String filename;
-    private String urlFilename;
+    private String imgDirectory;
+    private String alterText;
 }
