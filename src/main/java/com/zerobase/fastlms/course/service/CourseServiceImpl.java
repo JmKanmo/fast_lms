@@ -10,6 +10,7 @@ import com.zerobase.fastlms.course.model.ServiceResult;
 import com.zerobase.fastlms.course.model.TakeCourseInput;
 import com.zerobase.fastlms.course.repository.CourseRepository;
 import com.zerobase.fastlms.course.repository.TakeCourseRepository;
+import com.zerobase.fastlms.util.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,23 +29,11 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TakeCourseRepository takeCourseRepository;
     private final CourseMapper courseMapper;
-    
-    
-    private LocalDate getLocalDate(String value) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            return LocalDate.parse(value, formatter);
-        } catch (Exception e) {
-        
-        }
-        
-        return null;
-    }
-    
+
     @Override
     public boolean add(CourseInput parameter) {
         
-        LocalDate saleEndDt = getLocalDate(parameter.getSaleEndDtText());
+        LocalDate saleEndDt = Utils.getLocalDate(parameter.getSaleEndDtText(),"yyyy-MM-dd");
         
         Course course = Course.builder()
                 .categoryId(parameter.getCategoryId())
@@ -67,7 +56,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public boolean set(CourseInput parameter) {
         
-        LocalDate saleEndDt = getLocalDate(parameter.getSaleEndDtText());
+        LocalDate saleEndDt = Utils.getLocalDate(parameter.getSaleEndDtText(),"yyyy-MM-dd");
         
         Optional<Course> optionalCourse = courseRepository.findById(parameter.getId());
         if (!optionalCourse.isPresent()) {

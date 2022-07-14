@@ -14,8 +14,7 @@
             |
             <a href="/course">강좌 목록</a>
             |
-            <a href="/member/login">로그인</a>
-            |
+            <a sec:authorize="!isAuthenticated()" href="/member/login">로그인 |</a>
             <a href="/member/logout">로그아웃</a>
         </div>
         <hr/>
@@ -33,6 +32,8 @@
         <a href="/admin/course/list.do"> 강좌 관리 </a>
         |
         <a href="/admin/takecourse/list.do"> 수강 관리 </a>
+        |
+        <a href="/admin/banner/list.do"> 배너 관리 </a>
         |
         <a href="/member/logout"> 로그아웃 </a>
         <br/>

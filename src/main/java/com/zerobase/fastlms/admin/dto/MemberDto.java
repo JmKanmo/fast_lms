@@ -14,35 +14,36 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Data
 public class MemberDto {
-    
+
     String userId;
     String userName;
     String phone;
     String password;
     LocalDateTime regDt;
     LocalDateTime udtDt;
-    
+
     boolean emailAuthYn;
     LocalDateTime emailAuthDt;
     String emailAuthKey;
-    
+
     String resetPasswordKey;
     LocalDateTime resetPasswordLimitDt;
-    
+
     boolean adminYn;
     String userStatus;
-    
+
     private String zipcode;
     private String addr;
     private String addrDetail;
-    
+
     //추가컬럼
     long totalCount;
     long seq;
-    
-    
+
+    private LocalDateTime lastLoginTime;
+
     public static MemberDto of(Member member) {
-        
+
         return MemberDto.builder()
                 .userId(member.getUserId())
                 .userName(member.getUserName())
@@ -57,24 +58,27 @@ public class MemberDto {
                 .resetPasswordLimitDt(member.getResetPasswordLimitDt())
                 .adminYn(member.isAdminYn())
                 .userStatus(member.getUserStatus())
-                
+
                 .zipcode(member.getZipcode())
                 .addr(member.getAddr())
                 .addrDetail(member.getAddrDetail())
-                
+
                 .build();
     }
-    
-    
+
+
     public String getRegDtText() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
         return regDt != null ? regDt.format(formatter) : "";
     }
-    
+
     public String getUdtDtText() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
         return udtDt != null ? udtDt.format(formatter) : "";
-        
     }
-    
+
+    public String getLastLoginTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        return lastLoginTime != null ? lastLoginTime.format(formatter) : "";
+    }
 }

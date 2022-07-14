@@ -30,7 +30,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     UserAuthenticationFailureHandler getFailureHandler() {
         return new UserAuthenticationFailureHandler();
     }
-    
+
+    @Bean
+    UserAuthenticationSuccessHandler getSuccessHandler() {
+        return new UserAuthenticationSuccessHandler();
+    }
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/favicon.ico", "/files/**");
@@ -58,7 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .hasAuthority("ROLE_ADMIN");
 
         http.formLogin()
-                .loginPage("/member/login")
+                .loginPage("/member/login").successHandler(getSuccessHandler())
                 .failureHandler(getFailureHandler())
                 .permitAll();
 

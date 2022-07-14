@@ -5,11 +5,15 @@ import com.zerobase.fastlms.admin.dto.MemberDto;
 import com.zerobase.fastlms.course.dto.TakeCourseDto;
 import com.zerobase.fastlms.course.model.ServiceResult;
 import com.zerobase.fastlms.course.service.TakeCourseService;
+import com.zerobase.fastlms.member.model.AccessData;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
+import com.zerobase.fastlms.member.service.AccessService;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.PasswordUtils;
+import com.zerobase.fastlms.util.Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,21 +22,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
+@Slf4j
 public class MemberController {
     
     private final MemberService memberService;
     private final TakeCourseService takeCourseService;
-    
+    private final AccessService accessService;
+
     @RequestMapping("/member/login")
     public String login() {
         
         return "member/login";
     }
-    
+
+    @RequestMapping("/member/redirect")
+    public String redirect(HttpServletRequest httpServletRequest, Principal principal) {
+        String userAgent = httpServletRequest.getHeader("user-agent");
+        String clientIp = Utils.getIPAddress(httpServletRequest);
+        String userId = principal.getName();
+        LocalDateTime nowTime = LocalDateTime.now();
+        accessService.saveAccessData(
+                AccessData.builder()
+                        .accessIp(clientIp)
+                        .loginTime(nowTime)
+                        .userAgent(userAgent)
+                        .userId(userId)
+                        .build());
+        log.info("[MemberController:redirect] userAgent: {}. clientIp: {}", userAgent, clientIp);
+        return "redirect:/";
+    }
+
     @GetMapping("/member/find-password")
     public String findPassword() {
         

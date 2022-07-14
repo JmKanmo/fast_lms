@@ -10,22 +10,23 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_gmail_id@gmail.com
-    password: your_gamil_password
+    username: apdh1709@gmail.com
+    password: huaieadyjdqovgov
     properties:
       mail:
         smtp:
+          auth: true
           starttls:
             enable: true
-            
+
 logging:
   level:
     root: info
-    
+
 mybatis:
   mapper-locations: mybatis/**/*.xml
   configuration:

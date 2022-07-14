@@ -10,6 +10,7 @@
         }
         .list table th, .list table td {
             border:solid 1px #000;
+            text-align: center;
         }
 
         .search-form {
@@ -77,6 +78,10 @@
                     <th>
                         관리자여부
                     </th>
+
+                    <th>
+                        마지막 로그인 일자
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -99,6 +104,10 @@
                     <td>
                         <p th:if="${x.adminYn}">Y</p>
                         <p th:if="${x.adminYn eq false}">N</p>
+                    </td>
+                    <td>
+                        <p th:if="${#strings.isEmpty(x.lastLoginTime) eq true}">로그인 시도 횟수 없음</p>
+                        <p th:if="${#strings.isEmpty(x.lastLoginTime) eq false}" th:text="${x.lastLoginTime}"></p>
                     </td>
                 </tr>
             </tbody>

@@ -8,11 +8,21 @@
             width: 100%;
             border-collapse: collapse;
         }
-        .detail table th, .detail table td {
+        .detail .detail_table th, .detail .detail_table td {
             border:solid 1px #000;
         }
 
-    </style>
+        .user_access_table th {
+            background-color: black;
+            color: white;
+            border: 2px solid #ffffff;
+            text-align: center;
+        }
+
+        .user_access_table tbody {
+            text-align: center;
+        }
+</style>
 </head>
 <body>
     <div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
@@ -21,7 +31,7 @@
 
     <div class="detail" >
 
-        <table>
+        <table class="detail_table">
             <tbody>
                 <tr>
                     <th>아이디</th>
@@ -101,7 +111,33 @@
 
         </div>
 
+        <br/>
 
+        <table class="user_access_table">
+            <thead>
+            <tr>
+                <th>NO</th>
+                <th>
+                    로그인 일자
+                </th>
+                <th>
+                    접속 IP
+                </th>
+                <th>
+                    접속 UserAgent
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="access : ${accessList}">
+                <td th:text="${access.id}">1</td>
+                <td th:text="${access.loginTime}">2022.07.14 10:41</td>
+                <td th:text="${access.accessIp}">192.163.32.33</td>
+                <td th:text="${access.userAgent}">Google-Chrome</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
     </div>
 
 
