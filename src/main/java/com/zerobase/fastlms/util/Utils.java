@@ -1,10 +1,13 @@
 package com.zerobase.fastlms.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 public class Utils {
     public static final String IMAGE_SAVE_DIRECTORY = "/files";
     public static final String IMAGE_LOCAL_DIRECTORY = "/library/opt/files/";
@@ -14,7 +17,7 @@ public class Utils {
         try {
             return LocalDate.parse(value, formatter);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
         }
         return null;
     }

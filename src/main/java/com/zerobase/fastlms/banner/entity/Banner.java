@@ -37,6 +37,7 @@ public class Banner {
 
     public static Banner of(BannerInput bannerInput) {
         return Banner.builder()
+                .id(bannerInput.getId())
                 .name(bannerInput.getName())
                 .linkUrl(bannerInput.getLinkUrl())
                 .imgDirectory(bannerInput.getImgDirectory())

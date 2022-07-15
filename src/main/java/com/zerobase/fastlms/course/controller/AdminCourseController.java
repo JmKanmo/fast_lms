@@ -93,7 +93,6 @@ public class AdminCourseController extends BaseController {
                 File newFile = new File(Utils.getNewSaveFile(file.getOriginalFilename(), Utils.IMAGE_LOCAL_DIRECTORY, uuid));
                 FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(newFile));
             } catch (IOException e) {
-                log.info("############################ - 1");
                 log.info(e.getMessage());
             }
         }else{

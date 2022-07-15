@@ -114,9 +114,8 @@
         </table>
 
 
-        <div class="pager" th:utext="${pager}">
+        <div class="pager" th:if="${#lists.size(list) > 0}" th:utext="${pager}">
         </div>
-
 
     </div>
 

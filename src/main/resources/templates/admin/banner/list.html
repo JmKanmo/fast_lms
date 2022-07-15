@@ -22,6 +22,16 @@
             border: 1px solid black;
         }
 
+        .banner_table td {
+            width: 100px;
+            height: 150px;
+        }
+
+        .banner_table td img {
+            width: 100%;
+            height: 100%;
+        }
+
         .banner_btn_div .banner_reg_button {
             border-width: 0;
             background-color: transparent;
@@ -32,13 +42,44 @@
             color: #000;
             cursor: pointer;
         }
+
+        .pager {
+            text-align: center;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
+            $('#totalCheckBox').on('click', function () {
+                var checked = $(this).is(':checked')
 
+                $('#bannerList input[type=checkbox]').each(function (k, v) {
+                    $(this).prop('checked', checked);
+                });
+            });
+
+            $('#banner_reg_button').on('click', function () {
+                var $checked = $('#bannerList input[type=checkbox]:checked');
+                if ($checked.length < 1) {
+                    alert(' 삭제할 데이터를 선택해 주세요. ');
+                    return false;
+                }
+
+                if (!confirm(' 선택한 데이터를 삭제하시겠습니까? ')) {
+                    return false;
+                }
+
+                var idList = [];
+                $.each($checked, function (k, v) {
+                    idList.push($(this).val());
+                });
+
+                var $deleteForm = $('form[name=deleteBannerForm]');
+                $deleteForm.find('input[name=idList]').val(idList.join(','));
+                $deleteForm.submit();
+            });
         });
     </script>
 </head>
@@ -49,9 +90,12 @@
 <div class="banner_btn_div">
     <a class="banner_list_link" href="/admin/banner/add.do">배너 등록</a>
     <button class="banner_reg_button" id="banner_reg_button" type="submit">선택 삭제</button>
-    <span class="banner_count">전체 <span>25</span> 개</span>
+    <span class="banner_count">전체 <span th:text="${count}">25</span> 개</span>
 </div>
 
+<form name="deleteBannerForm" method="post" action="/admin/banner/delete.do">
+    <input type="hidden" name="idList"/>
+</form>
 
 <div class="banner_list">
     <table class="banner_table">
@@ -76,35 +120,49 @@
             <th>
                 <span>등록일</span>
             </th>
+
+            <th>
+                <span>공개 여부</span>
+            </th>
         </tr>
         </thead>
-        <tbody id="dataLIst">
+        <tbody id="bannerList">
         <tr th:each="banner : ${bannerList}">
             <td>
-                <input type="checkbox"/>
+                <input id="total_check_btn" type="checkbox" th:value="${banner.id}"/>
             </td>
 
-            <td>
-                <span th:text="${banner.id}" th:value="${banner.id}">1</span>
+            <td style="text-align: center">
+                <span th:text="${banner.id}">1</span>
             </td>
 
-            <td>
+            <td style="text-align: center">
                 <p>
                     <a th:href="'/admin/banner/update.do?id=' + ${banner.id}" th:text="${banner.name}">매인배너1</a>
                 </p>
             </td>
 
             <td>
-                <img th:src="@{${banner.imgSrc}}">
+                <span th:if="${banner.imgDirectory == null} OR ${#strings.isEmpty(banner.imgDirectory)}"
+                      th:text="${banner.alterText}"></span>
+
+                <img th:if="${banner.imgDirectory != null} AND ${#bools.isFalse(#strings.isEmpty(banner.imgDirectory))}"
+                     th:src="${banner.imgDirectory}" th:title="${banner.alterText}">
             </td>
 
-            <td>
-                <p th:text="${x.regDt}">2021.01.01</p>
+            <td style="text-align: center">
+                <p th:text="${banner.regDt}">2021.01.01</p>
+            </td>
+
+            <td style="text-align: center">
+                <p th:if="${#bools.isTrue(banner.visibility)}">Y</p>
+                <p th:if="${#bools.isFalse(banner.visibility)}">N</p>
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="pager" th:utext="${pager}">
+
+    <div class="pager" th:if="${#lists.size(bannerList) > 0}" th:utext="${pager}">
     </div>
 </div>
 </body>

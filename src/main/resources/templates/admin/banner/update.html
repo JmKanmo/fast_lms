@@ -19,7 +19,7 @@
             margin-left: 20px;
         }
 
-        .banner_btn_div .banner_reg_button {
+        .banner_btn_div .banner_update_button {
             border-width: 0;
             background-color: transparent;
             text-decoration: underline;
@@ -40,7 +40,7 @@
     <script>
         $(document).ready(function () {
             $('form[name=banner_form]').on('submit', function () {
-                if (!confirm('배너를 등록하시겠습니까?')) {
+                if (!confirm('배너를 수정하시겠습니까?')) {
                     return false;
                 }
             });
@@ -48,22 +48,22 @@
     </script>
 </head>
 <body>
-<h1>배너 관리 - 배너 등록</h1>
+<h1>배너 관리 - 배너 수정</h1>
 
-<form method="post" enctype="multipart/form-data" name="banner_form">
+<form method="post" enctype="multipart/form-data" name="banner_form" action="/admin/banner/update.do">
     <table class="banner-form">
         <tbody>
         <tr>
             <th>배너명</th>
             <td>
-                <input type="text" name="name" required placeholder="배너명 입력"/>
+                <input type="text" name="name" required placeholder="배너명 입력" th:value="${banner.name}"/>
             </td>
         </tr>
 
         <tr>
             <th>대체텍스트</th>
             <td>
-                <input type="text" name="alterText" required placeholder="대체 텍스트 입력"/>
+                <input type="text" name="alterText" required placeholder="대체 텍스트 입력" th:value="${banner.alterText}"/>
             </td>
         </tr>
 
@@ -81,7 +81,7 @@
                 링크주소
             </th>
             <td>
-                <input type="text" name="linkUrl" required placeholder="링크 주소 입력"/>
+                <input type="text" name="linkUrl" required placeholder="링크 주소 입력" th:value="${banner.linkUrl}"/>
             </td>
         </tr>
 
@@ -105,7 +105,7 @@
             </th>
 
             <td>
-                <input type="number" name="sortOrder" required placeholder="정렬 순서"/>
+                <input type="number" name="sortOrder" required placeholder="정렬 순서" th:value="${banner.sortOrder}"/>
             </td>
         </tr>
 
@@ -115,14 +115,16 @@
             </th>
             <td>
                 <label for="visibility">공개</label>
-                <input type="checkbox" id="visibility" name="visibility">
+                <input type="checkbox" id="visibility" name="visibility" th:checked="${banner.visibility}">
             </td>
         </tr>
         </tbody>
     </table>
 
+    <input type="hidden" th:value="${banner.id}" name="id">
+
     <div class="banner_btn_div">
-        <button class="banner_reg_button" id="banner_reg_button" type="submit"> 배너 등록 하기</button>
+        <button class="banner_update_button" id="banner_update_button" type="submit"> 배너 수정 하기</button>
         <a class="banner_list_link" href="/admin/banner/list.do">목록 이동</a>
     </div>
 </form>

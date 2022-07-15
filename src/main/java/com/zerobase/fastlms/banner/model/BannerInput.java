@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BannerInput {
+    private long id;
     private String name;
     private String linkUrl;
     private int openSelect;

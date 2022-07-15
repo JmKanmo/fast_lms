@@ -7,8 +7,14 @@ import com.zerobase.fastlms.banner.model.BannerParam;
 import java.util.List;
 
 public interface BannerService {
-    List<BannerDto> selectAllDto(BannerParam bannerParam);
+    List<BannerDto> selectBanner(BannerParam bannerParam);
 
-    boolean insertBanner(BannerInput bannerInput);
+    List<BannerDto> selectAllBanner();
 
+    boolean updateBanner(BannerInput bannerInput);
+
+    int deleteBanner(BannerParam bannerParam);
+    BannerDto selectBannerById(long id);
+
+    boolean checkExist(long id);
 }

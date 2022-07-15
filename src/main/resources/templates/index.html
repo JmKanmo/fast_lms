@@ -3,14 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <title>메인 페이지</title>
+
+    <style>
+        /*기본스타일 정의*/
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-width: 1080px;
+            min-height: 100%;
+            font-family: '나눔 고딕', NanumGothic, '돋움', Dotum, sans-serif;
+        }
+
+        ul,
+        ol,
+        li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .clear_fix::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .blind {
+            position: absolute;
+            overflow: hidden;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            clip: rect(0 0 0 0);
+        }
+
+        /* carousel 프로젝트 */
+        button {
+            border: 0 none;
+            background-color: transparent;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .banner-carousel-board {
+            width: 1260px;
+            height: 700px;
+            border: 1px solid #46464652;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .banner-carousel-board .banner-list {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .banner-carousel-board .banner-list .banner-image {
+            width: 100%;
+            height: 100%;
+        }
+
+        .banner-carousel-board .carousel-option-box {
+            position: absolute;
+            bottom: 10px;
+            right: 100px;
+            height: 50px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-option-box .carousel-option {
+            float: left;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-option-box .carousel-option:nth-child(n+2) {
+            margin-left: 15px;
+        }
+
+        .carousel-option-box .pause_option-box {
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 23px;
+            line-height: 300px;
+            background-image: url(../image/pause.png);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .carousel-option-box .middle-option-box {
+            display: flex;
+            width: 140px;
+            height: 47px;
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-option-box .middle-option-box .count-option-box :nth-child(n+2) {
+            margin-left: 3px;
+        }
+
+        .carousel-option-box .middle-option-box .count-option-box {
+            float: left;
+            width: 50%;
+            height: 100%;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+        }
+
+        .carousel-option-box .middle-option-box .count-option-box .banner-count {
+            font-size: 17px;
+            color: #fff;
+            font-family: "Lato", "Helvetica Neue", "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "돋움", dotum, sans-serif;
+        }
+
+        .carousel-option-box .middle-option-box .count-option-box .un-emp {
+            opacity: 0.6;
+        }
+
+        .carousel-option-box .middle-option-box .more-option-box {
+            cursor: pointer;
+            float: right;
+            width: 50%;
+            height: 100%;
+            background-image: url(../image/more_button.png);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .carousel-option-box .move-option-box {
+            display: flex;
+            height: 45px;
+            border-radius: 23px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-option-box .move-option-box .backward-box {
+            float: left;
+            width: 46px;
+            height: 45px;
+            overflow: hidden;
+            line-height: 300px;
+            background-image: url(../image/backward_arrow.png);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .carousel-option-box .move-option-box .forward-box {
+            float: right;
+            width: 46px;
+            height: 45px;
+            overflow: hidden;
+            line-height: 300px;
+            background-image: url(../image/forward_arrow.png);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        class CarouselController {
+            constructor() {
+                this.bannerCarouselBoard = document.getElementById("banner-carousel-board");
+                this.bannerCarouselBoardList = this.bannerCarouselBoard.querySelectorAll("li");
+                this.pauseButton = document.getElementById("carousel-pause-button");
+                this.moreButton = document.getElementById("carousel-more-button");
+                this.backwardButton = document.getElementById("carousel-backward-button");
+                this.forwardButton = document.getElementById("carousel-forward-button");
+                this.bannerCurrentCount = document.getElementById("banner-current-count");
+                this.bannerTotalCount = document.getElementById("banner-total-count");
+                this.prevBannerIndex = 0;
+                this.currentBannerIndex = this.prevBannerIndex;
+                this.bannerCarouselBoardList[this.currentBannerIndex].style.display = 'block';
+                this.totalBannerSize = this.bannerCarouselBoardList.length;
+                this.bannerCurrentCount.innerText = `0${this.currentBannerIndex + 1}`;
+                this.bannerTotalCount.innerText = this.totalBannerSize.toString();
+                this.carouselDelayTime = 4000;
+                this.carouselRunnerFlag = true;
+                this.timeoutId = 0;
+            }
+
+            initCarouselController() {
+                this.initCarouselRunner();
+                this.initCarouselButtonListener();
+            }
+
+            initCarouselRunner() {
+                this.carouselRunner(this.prevBannerIndex);
+            }
+
+            initCarouselButtonListener() {
+                this.pauseButton.addEventListener("click", () => {
+                    if (this.carouselRunnerFlag === true) {
+                        this.carouselRunnerFlag = false;
+                        this.pauseButton.style.backgroundImage = "url(../image/start.png)";
+                        clearTimeout(this.timeoutId);
+                    } else {
+                        this.carouselRunnerFlag = true;
+                        this.pauseButton.style.backgroundImage = "url(../image/pause.png)";
+                        this.carouselRunner(this.prevBannerIndex);
+                    }
+                });
+
+                this.moreButton.addEventListener("click", () => {
+                    // TODO, 전체 광고 배너 이미지 보여주는 사이트로 이동 or 새창 OPEN
+                    alert("더보기 버튼 입니다. 추후에 구현 해볼 예정");
+                });
+
+                this.backwardButton.addEventListener("click", () => {
+                    this.moveCarousel(true);
+                    clearTimeout(this.timeoutId);
+
+                    if (this.carouselRunnerFlag === true) {
+                        this.carouselRunner();
+                    }
+                });
+
+                this.forwardButton.addEventListener("click", () => {
+                    this.moveCarousel(false);
+                    clearTimeout(this.timeoutId);
+
+                    if (this.carouselRunnerFlag === true) {
+                        this.carouselRunner();
+                    }
+                });
+            }
+
+            carouselRunner() {
+                this.timeoutId = setTimeout(() => {
+                    this.prevBannerIndex = this.currentBannerIndex;
+
+                    if (this.bannerCarouselBoardList[this.prevBannerIndex].style.display === 'block') {
+                        this.bannerCarouselBoardList[this.prevBannerIndex].style.display = '';
+                    }
+
+                    this.moveCarousel(false);
+
+                    if (this.bannerCarouselBoardList[this.currentBannerIndex].style.display === '') {
+                        this.bannerCarouselBoardList[this.currentBannerIndex].style.display = 'block';
+                    }
+                    this.carouselRunner();
+                }, this.carouselDelayTime);
+            }
+
+            moveCarousel(isLeft) {
+                this.prevBannerIndex = this.currentBannerIndex;
+
+                if (this.bannerCarouselBoardList[this.prevBannerIndex].style.display === 'block') {
+                    this.bannerCarouselBoardList[this.prevBannerIndex].style.display = '';
+                }
+
+                if (isLeft === true) {
+                    // left
+                    this.currentBannerIndex--;
+
+                    if (this.currentBannerIndex < 0) {
+                        this.currentBannerIndex = this.totalBannerSize - 1;
+                    }
+                } else {
+                    // right
+                    this.currentBannerIndex++;
+
+                    if (this.currentBannerIndex >= this.totalBannerSize) {
+                        this.currentBannerIndex = 0;
+                    }
+                }
+
+                if (this.currentBannerIndex + 1 < 10) {
+                    this.bannerCurrentCount.innerText = `0${this.currentBannerIndex + 1}`;
+                } else {
+                    this.bannerCurrentCount.innerText = `${this.currentBannerIndex + 1}`;
+                }
+
+                if (this.bannerCarouselBoardList[this.currentBannerIndex].style.display === '') {
+                    this.bannerCarouselBoardList[this.currentBannerIndex].style.display = 'block';
+                }
+            }
+        }
+
+        // Execute all functions
+        document.addEventListener("DOMContentLoaded", () => {
+            // TODO
+            const carouselController = new CarouselController();
+            carouselController.initCarouselController();
+        });
+    </script>
 </head>
 <body>
-    <h1>메인 페이지 </h1>
-    <div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
+<h1>메인 페이지 </h1>
+<div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
 
-<!--    <div>-->
-<!--        <img src="/files/2021/09/05/6e5170576b0c4c29879e5334dfccab2d.png"/>-->
-<!--    </div>-->
+<!-- 프로모션박스 -->
+<ul class="banner-carousel-board" id="banner-carousel-board">
 
+    <div class="carousel-option-box clear_fix">
+        <button type="button" class="carousel-option pause_option-box" id="carousel-pause-button">
+            <span class="blind">멈추기/재생 버튼</span>
+        </button>
+
+        <div class="carousel-option middle-option-box clear_fix">
+            <div class="count-option-box">
+                <span class="banner-count" id="banner-current-count">
+                    08
+                </span>
+
+                <span class="banner-count un-emp">
+                    /
+                </span>
+
+                <span class="banner-count un-emp" id="banner-total-count">
+                    62
+                </span>
+            </div>
+
+            <button type="button" class="more-option-box" id="carousel-more-button">
+                <span class="blind">더보기 버튼</span>
+            </button>
+        </div>
+
+        <div class="carousel-option move-option-box clear_fix">
+            <button type="button" class="forward-box" id="carousel-backward-button">
+                <span class="blind">왼쪽 이동 버튼</span>
+            </button>
+
+            <button type="button" class="backward-box" id="carousel-forward-button">
+                <span class="blind">오른쪽 이동 버튼</span>
+            </button>
+        </div>
+    </div>
+
+    <th:block th:each="banner : ${bannerList}">
+        <li class="banner-list">
+            <img class="banner-image" th:src="${banner.imgDirectory}">
+        </li>
+    </th:block>
+</ul>
 </body>
 </html>

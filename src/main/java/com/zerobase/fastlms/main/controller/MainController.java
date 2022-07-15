@@ -1,9 +1,11 @@
 package com.zerobase.fastlms.main.controller;
 
 
+import com.zerobase.fastlms.banner.service.BannerService;
 import com.zerobase.fastlms.components.MailComponents;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +19,10 @@ import java.io.PrintWriter;
 public class MainController {
 
     private final MailComponents mailComponents;
-    
+    private final BannerService bannerService;
+
     @RequestMapping("/")
-    public String index() {
+    public String index(Model model) {
         
         /*
         String email = "satcop@naver.com";
@@ -28,12 +31,10 @@ public class MainController {
         
         mailComponents.sendMail(email, subject, text);
         */
-        
+        model.addAttribute("bannerList", bannerService.selectAllBanner());
         return "index";
     }
-    
-    
-    
+
     @RequestMapping("/error/denied")
     public String errorDenied() {
         
