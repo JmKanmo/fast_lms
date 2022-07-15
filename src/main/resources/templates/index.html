@@ -170,6 +170,12 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+
+        .banner-list .banner_div {
+            height: 100%;
+        }
+
+        
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -347,7 +353,21 @@
 
     <th:block th:each="banner : ${bannerList}">
         <li class="banner-list">
-            <img class="banner-image" th:src="${banner.imgDirectory}">
+            <div class="banner_div" th:if="${banner.imgDirectory == null} OR ${#strings.isEmpty(banner.imgDirectory)}">
+                <p th:text="${banner.alterText}"></p>
+                <a th:if="${banner.openSelect != 0}" th:href="${banner.linkUrl}"></a>
+                <a th:if="${banner.openSelect == 0}" th:href="${banner.linkUrl}" target="_blank"></a>
+            </div>
+
+            <div class="banner_div" th:if="${banner.imgDirectory != null} AND ${#bools.isFalse(#strings.isEmpty(banner.imgDirectory))}">
+                <a th:if="${banner.openSelect != 0}" th:href="${banner.linkUrl}">
+                    <img class="banner-image" th:src="${banner.imgDirectory}" th:title="${banner.alterText}">
+                </a>
+
+                <a th:if="${banner.openSelect == 0}" th:href="${banner.linkUrl}" target="_blank">
+                    <img class="banner-image" th:src="${banner.imgDirectory}" th:title="${banner.alterText}">
+                </a>
+            </div>
         </li>
     </th:block>
 </ul>
